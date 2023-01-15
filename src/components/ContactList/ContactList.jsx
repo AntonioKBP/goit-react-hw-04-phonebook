@@ -7,7 +7,7 @@ export const ContactList = ({ users, onDeleteContact }) => {
       {users.map(user => {
         return (
           <ListItem key={user.id}>
-            {user.name}: {user.number}{' '}
+            {user.name}: {user.number}
             <ListItemBtn type="button" onClick={() => onDeleteContact(user.id)}>
               <RiDeleteBin2Line />
             </ListItemBtn>

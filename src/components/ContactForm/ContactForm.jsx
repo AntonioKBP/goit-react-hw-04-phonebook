@@ -1,3 +1,5 @@
+import { PropTypes } from 'prop-types';
+
 import { useState } from 'react';
 
 import {
@@ -10,21 +12,17 @@ import {
 } from './ContactForm.styled';
 
 export const ContactForm = ({ onSubmit }) => {
-  // state = {
-  //   name: '',
-  //   number: '',
-  // };
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
   const handleChange = e => {
-    // console.log(e.target.value);
+    console.log(e.target.name);
     const { name, value } = e.target;
     switch (name) {
       case 'name':
         setName(value);
         break;
-      case 'value':
+      case 'number':
         setNumber(value);
         break;
       default:
@@ -34,10 +32,10 @@ export const ContactForm = ({ onSubmit }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
+    onSubmit({ name, number });
 
-    onSubmit();
-
-    this.setState({ name: '', number: '' });
+    onSubmit('');
+    setName('');
   };
 
   return (
@@ -75,4 +73,8 @@ export const ContactForm = ({ onSubmit }) => {
       </Form>
     </>
   );
+};
+
+ContactForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
 };
