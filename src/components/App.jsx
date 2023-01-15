@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import { Notify } from 'notiflix';
 import PropTypes from 'prop-types';
@@ -13,35 +13,42 @@ import {
   SecondartTitle,
 } from './TitleAndMainStyled/TitleAndMainStyled.styled';
 
-export class App extends Component {
-  state = {
-    contacts: [
-      // { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      // { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      // { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      // { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
-  };
+export const App = () => {
+  // state = {
+  //   contacts: [
+  //     { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+  //     { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+  //     { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+  //     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+  //   ],
+  //   filter: '',
+  // };
 
-  componentDidMount() {
+  const [contacts, setContacts] = useState([]);
+  const [filter, setFilter] = useState('');
+
+  useEffect(() => {
     const contacts = localStorage.getItem('contacts');
     const ParcedContacts = JSON.parse(contacts);
     if (ParcedContacts) {
-      this.setState({ contacts: ParcedContacts });
+      setContacts(ParcedContacts);
     }
-  }
+  }, []);
 
-  componentDidUpdate(_, prevState) {
-    if (this.state.contacts.length !== prevState.contacts.length) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
-  addUser = data => {
-    const findExistsName = this.state.contacts.some(
-      contact => contact.name === data.name
-    );
+  //   componentDidMount() {
+  //   const contacts = localStorage.getItem('contacts');
+  //   const ParcedContacts = JSON.parse(contacts);
+  //   if (ParcedContacts) {
+  //     this.setState({ contacts: ParcedContacts });
+  //   }
+  // }
+
+  const addUser = data => {
+    const findExistsName = contacts.some(contact => contact.name === data.name);
     if (findExistsName) {
       Notify.warning(`${data.name} is already in contacts`);
       return;
@@ -50,49 +57,114 @@ export class App extends Component {
         id: nanoid(),
         ...data,
       };
-      this.setState(prevState => ({
+      setContacts(prevState => ({
         contacts: [...prevState.contacts, newAbonent],
       }));
     }
   };
 
-  handleSearch = e => {
-    this.setState({ filter: e.target.value });
+  const handleSearch = e => {
+    setFilter(e.target.value);
   };
 
-  handleDeleteContact = contactId => {
-    this.setState(prevState => ({
+  const handleDeleteContact = contactId => {
+    setContacts(prevState => ({
       contacts: prevState.contacts.filter(item => item.id !== contactId),
     }));
     return;
   };
 
-  render() {
-    const contactsLenght = this.state.contacts.length;
-    // console.log(contactsLenght);
-    const { contacts, filter } = this.state;
-    const newUsers = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
-    );
-    // console.log(newUsers);
+  // render() {
+  const contactsLenght = contacts.length;
+  //   // console.log(contactsLenght);
+  //   const { contacts, filter } = this.state;
+  const newUsers = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
+  // console.log(newUsers);
 
-    return (
-      <Main>
-        <MainTitle>PhoneBook</MainTitle>
-        <ContactForm onSubmit={this.addUser} />
+  return (
+    <Main>
+      <MainTitle>PhoneBook</MainTitle>
+      <ContactForm onSubmit={addUser} />
 
-        <SecondartTitle>Contacts</SecondartTitle>
-        <Filter filterValue={filter} onSearch={this.handleSearch} />
-        {contactsLenght > 0 && (
-          <ContactList
-            users={newUsers}
-            onDeleteContact={this.handleDeleteContact}
-          />
-        )}
-      </Main>
-    );
-  }
-}
+      <SecondartTitle>Contacts</SecondartTitle>
+      <Filter filterValue={filter} onSearch={handleSearch} />
+      {contactsLenght > 0 && (
+        <ContactList users={newUsers} onDeleteContact={handleDeleteContact} />
+      )}
+    </Main>
+  );
+
+  // componentDidMount() {
+  //   const contacts = localStorage.getItem('contacts');
+  //   const ParcedContacts = JSON.parse(contacts);
+  //   if (ParcedContacts) {
+  //     this.setState({ contacts: ParcedContacts });
+  //   }
+  // }
+
+  // componentDidUpdate(_, prevState) {
+  //   if (this.state.contacts.length !== prevState.contacts.length) {
+  //     localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+  //   }
+  // }
+
+  // addUser = data => {
+  //   const findExistsName = this.state.contacts.some(
+  //     contact => contact.name === data.name
+  //   );
+  //   if (findExistsName) {
+  //     Notify.warning(`${data.name} is already in contacts`);
+  //     return;
+  //   } else {
+  //     const newAbonent = {
+  //       id: nanoid(),
+  //       ...data,
+  //     };
+  //     this.setState(prevState => ({
+  //       contacts: [...prevState.contacts, newAbonent],
+  //     }));
+  //   }
+  // };
+
+  // handleSearch = e => {
+  //   this.setState({ filter: e.target.value });
+  // };
+
+  // handleDeleteContact = contactId => {
+  //   this.setState(prevState => ({
+  //     contacts: prevState.contacts.filter(item => item.id !== contactId),
+  //   }));
+  //   return;
+  // };
+
+  // render() {
+  //   const contactsLenght = this.state.contacts.length;
+  //   // console.log(contactsLenght);
+  //   const { contacts, filter } = this.state;
+  //   const newUsers = contacts.filter(contact =>
+  //     contact.name.toLowerCase().includes(filter.toLowerCase())
+  //   );
+  //   // console.log(newUsers);
+
+  //   return (
+  //     <Main>
+  //       <MainTitle>PhoneBook</MainTitle>
+  //       <ContactForm onSubmit={this.addUser} />
+
+  //       <SecondartTitle>Contacts</SecondartTitle>
+  //       <Filter filterValue={filter} onSearch={this.handleSearch} />
+  //       {contactsLenght > 0 && (
+  //         <ContactList
+  //           users={newUsers}
+  //           onDeleteContact={this.handleDeleteContact}
+  //         />
+  //       )}
+  //     </Main>
+  //   );
+  // }
+};
 
 App.propTypes = {
   contacts: PropTypes.arrayOf(
