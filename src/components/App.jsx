@@ -14,22 +14,14 @@ import {
 } from './TitleAndMainStyled/TitleAndMainStyled.styled';
 
 export const App = () => {
-  // state = {
-  //   contacts: [
-  //     { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-  //     { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-  //     { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-  //     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  //   ],
-  //   filter: '',
-  // };
-
   const [contacts, setContacts] = useState([]);
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
+    console.log('mount');
     const contacts = localStorage.getItem('contacts');
     const ParcedContacts = JSON.parse(contacts);
+    console.log(ParcedContacts);
     if (ParcedContacts) {
       setContacts(ParcedContacts);
     }
@@ -38,14 +30,6 @@ export const App = () => {
   useEffect(() => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
-
-  //   componentDidMount() {
-  //   const contacts = localStorage.getItem('contacts');
-  //   const ParcedContacts = JSON.parse(contacts);
-  //   if (ParcedContacts) {
-  //     this.setState({ contacts: ParcedContacts });
-  //   }
-  // }
 
   const addUser = data => {
     const findExistsName = contacts.some(contact => contact.name === data.name);
@@ -57,9 +41,7 @@ export const App = () => {
         id: nanoid(),
         ...data,
       };
-      setContacts(prevState => ({
-        contacts: [...prevState.contacts, newAbonent],
-      }));
+      setContacts(prevState => [...prevState, newAbonent]);
     }
   };
 
@@ -68,20 +50,13 @@ export const App = () => {
   };
 
   const handleDeleteContact = contactId => {
-    setContacts(prevState => ({
-      contacts: prevState.contacts.filter(item => item.id !== contactId),
-    }));
-    return;
+    setContacts(prevState => prevState.filter(item => item.id !== contactId));
   };
 
-  // render() {
   const contactsLenght = contacts.length;
-  //   // console.log(contactsLenght);
-  //   const { contacts, filter } = this.state;
   const newUsers = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
-  // console.log(newUsers);
 
   return (
     <Main>
