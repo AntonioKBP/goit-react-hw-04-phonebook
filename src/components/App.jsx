@@ -46,7 +46,7 @@ export const App = () => {
         id: nanoid(),
         ...data,
       };
-      setContacts(prevState => [...prevState, newAbonent]);
+      setContacts(prevState => [newAbonent, ...prevState]);
     }
   };
 

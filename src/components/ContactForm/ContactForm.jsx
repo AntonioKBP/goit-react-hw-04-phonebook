@@ -1,22 +1,20 @@
-import { PropTypes } from 'prop-types';
-
-import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 import {
   Form,
+  Input,
+  FormBtn,
   FormBlock,
   Label,
   FormLabelName,
-  Input,
-  FormBtn,
 } from './ContactForm.styled';
+import { useState } from 'react';
 
 export const ContactForm = ({ onSubmit }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
   const handleChange = e => {
-    console.log(e.target.name);
     const { name, value } = e.target;
     switch (name) {
       case 'name':
@@ -33,9 +31,8 @@ export const ContactForm = ({ onSubmit }) => {
   const handleSubmit = e => {
     e.preventDefault();
     onSubmit({ name, number });
-
-    onSubmit('');
     setName('');
+    setNumber('');
   };
 
   return (
@@ -55,7 +52,7 @@ export const ContactForm = ({ onSubmit }) => {
               placeholder="Enter Name"
             />
           </Label>
-          <Label>
+          <Label htmlFor="number">
             <FormLabelName>Number</FormLabelName>
             <Input
               value={number}
